@@ -4,9 +4,8 @@ const fs = require("fs")
 
 class Store {
     constructor({ name, defaults }) {
-        const dataPath = (electron.app || electron.remote.app).getPath(
-            "userData",
-        )
+        const app = electron.app || electron.remote.app
+        const dataPath = app.getPath("userData")
 
         this.path = path.join(dataPath, name + ".json")
         this.data = parseDataFile(this.path, defaults)

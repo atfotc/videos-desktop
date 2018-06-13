@@ -1,15 +1,13 @@
 {
     "name": "videos-desktop",
     "version": "0.1.0",
-    "main": "./source/index.js",
+    "main": "./source/main.js",
     "scripts": {
         "start": "concurrently 'node bundle.js' 'electron .'"
     },
     "devDependencies": {
         "concurrently": "^3.5.1",
-        "electron": "^2.0.2"
-    },
-    "dependencies": {
+        "electron": "^2.0.2",
         "react": "^16.4.0",
         "react-dom": "^16.4.0"
     }
