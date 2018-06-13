@@ -8,5 +8,9 @@
     "devDependencies": {
         "concurrently": "^3.5.1",
         "electron": "^2.0.2"
+    },
+    "dependencies": {
+        "react": "^16.4.0",
+        "react-dom": "^16.4.0"
     }
 }
