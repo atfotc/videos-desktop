@@ -1,38 +1,79 @@
 import React, { Component } from "react"
+import fs from "fs"
+import { Store } from "../store"
+import { Files } from "./files"
+
+const store = new Store({
+    name: "data",
+    defaults: {
+        id: 0,
+        files: {},
+        verses: {},
+        tracks: {},
+    },
+})
 
 class App extends Component {
-    constructor(...params) {
-        super(...params)
-
-        this.stop = this.stop.bind(this)
-        this.onDrop = this.onDrop.bind(this)
-    }
-
-    stop(e) {
+    onStop = e => {
         e.preventDefault()
         e.stopPropagation()
     }
 
-    onDrop(e) {
+    onDrop = e => {
         e.preventDefault()
         e.stopPropagation()
 
-        console.log("dropped", e.dataTransfer.files)
+        // console.log("dropped", e.dataTransfer.files)
+
+        Array.from(e.dataTransfer.files).forEach(this.onFile)
+    }
+
+    onFile = file => {
+        if (file.type !== "audio/mp3") {
+            this.onReject(file, "wrong type")
+            return
+        }
+
+        this.onStore(file)
+    }
+
+    onStore = file => {
+        const { name, path, size, type } = file
+
+        console.log(`saving ${name}`)
+
+        const id = store.increment("id")
+        const data = fs.readFileSync(path)
+
+        store.set("files", {
+            ...store.get("files"),
+            [id]: {
+                id,
+                ...file,
+                data: data.toString("base64"),
+            },
+        })
+
+        console.log(store.get("files"))
+    }
+
+    onReject = (file, reason) => {
+        console.log(`not saving ${file.name}, ${reason}`)
     }
 
     render() {
-        const { onDrop, stop } = this
+        const { onDrop, onStop } = this
 
         return (
             <div
                 draggable={true}
-                onDragOver={stop}
-                onDragLeave={stop}
-                onDragEnd={stop}
+                onDragOver={onStop}
+                onDragLeave={onStop}
+                onDragEnd={onStop}
                 onDrop={onDrop}
                 style={styles.dropper}
             >
-                hello world
+                <Files store={store} />
             </div>
         )
     }
