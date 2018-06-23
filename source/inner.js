@@ -11,6 +11,8 @@ const reducers = combineReducers({
 })
 
 const electronStore = new Store()
+// electronStore.clear()
+
 const storedState = electronStore.get("redux-state")
 
 const reduxStore = createStore(
