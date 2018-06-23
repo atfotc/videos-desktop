@@ -1,7 +1,7 @@
 {
     "name": "videos-desktop",
     "version": "0.1.0",
-    "main": "./source/main.js",
+    "main": "./source/outer.js",
     "scripts": {
         "start": "concurrently 'node bundle.js' 'electron .'"
     },
@@ -11,7 +11,10 @@
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "concurrently": "^3.5.1",
         "electron": "^2.0.2",
+        "electron-store": "^2.0.0",
         "react": "^16.4.0",
-        "react-dom": "^16.4.0"
+        "react-dom": "^16.4.0",
+        "react-redux": "^5.0.7",
+        "redux": "^4.0.0"
     }
 }

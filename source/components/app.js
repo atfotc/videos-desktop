@@ -1,82 +1,47 @@
-import React, { Component } from "react"
+import React from "react"
+import { connect } from "react-redux"
 import fs from "fs"
-import { Store } from "../store"
-import { Files } from "./files"
+import { Files } from "../components"
+import { addFile, files } from "../reducers/files"
 
-const store = new Store({
-    name: "data",
-    defaults: {
-        id: 0,
-        files: {},
-        verses: {},
-        tracks: {},
-    },
-})
+export function dispatchFiles(files, dispatch) {
+    Array.from(files).forEach(file => {
+        const { name, path, size, type } = file
 
-class App extends Component {
-    onStop = e => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
-
-    onDrop = e => {
-        e.preventDefault()
-        e.stopPropagation()
-
-        // console.log("dropped", e.dataTransfer.files)
-
-        Array.from(e.dataTransfer.files).forEach(this.onFile)
-    }
-
-    onFile = file => {
-        if (file.type !== "audio/mp3") {
-            this.onReject(file, "wrong type")
+        if (type !== "audio/mp3") {
+            console.log(`not saving ${name}, wrong type`)
             return
         }
 
-        this.onStore(file)
-    }
-
-    onStore = file => {
-        const { name, path, size, type } = file
-
         console.log(`saving ${name}`)
 
-        const id = store.increment("id")
         const data = fs.readFileSync(path)
 
-        store.set("files", {
-            ...store.get("files"),
-            [id]: {
-                id,
-                ...file,
+        dispatch(
+            addFile({
+                name,
+                path,
+                size,
+                type,
                 data: data.toString("base64"),
-            },
-        })
-
-        console.log(store.get("files"))
-    }
-
-    onReject = (file, reason) => {
-        console.log(`not saving ${file.name}, ${reason}`)
-    }
-
-    render() {
-        const { onDrop, onStop } = this
-
-        return (
-            <div
-                draggable={true}
-                onDragOver={onStop}
-                onDragLeave={onStop}
-                onDragEnd={onStop}
-                onDrop={onDrop}
-                style={styles.dropper}
-            >
-                <Files store={store} />
-            </div>
+            }),
         )
-    }
+    })
+}
+
+export function App({ onDragOver, onDragLeave, onDragEnd, onDrop }) {
+    return (
+        <div
+            draggable={true}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDragEnd={onDragEnd}
+            onDrop={onDrop}
+            style={styles.dropper}
+        >
+            <Files />
+        </div>
+    )
 }
 
 const styles = {
@@ -90,4 +55,29 @@ const styles = {
     },
 }
 
-export { App }
+export function mapStateToProps(state) {
+    return {}
+}
+
+export function mapDispatchToProps(dispatch) {
+    const stop = e => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
+    return {
+        onDragOver: e => stop(e),
+        onDragLeave: e => stop(e),
+        onDragEnd: e => stop(e),
+
+        onDrop: e => {
+            stop(e)
+            dispatchFiles(e.dataTransfer.files, dispatch)
+        },
+    }
+}
+
+export const ConnectedApp = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(App)
