@@ -60,14 +60,14 @@ const styles = {
         position: "absolute",
         top: 0,
         left: 0,
-        width: "30%",
+        width: 350,
         height: "100%",
     },
     details: {
         position: "absolute",
         top: 0,
         left: "30%",
-        width: "70%",
+        width: "calc(100% - 250px)",
         height: "100%",
     },
 }
