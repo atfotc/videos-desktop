@@ -1,40 +1,28 @@
 import React from "react"
 import { connect } from "react-redux"
 import { renameFile, renamedFile, removeFile } from "../reducers/files"
+import { File } from "../components"
 
 export function Files({ files, onClickRename, onClickRemove, onClickSave }) {
-    let input
-
     return (
-        <ol>
+        <ol style={styles.files}>
             {files.map(({ id, name, renaming }) => (
                 <li key={id}>
-                    {renaming ? (
-                        <span>
-                            <input
-                                type="text"
-                                ref={i => (input = i)}
-                                defaultValue={name}
-                            />
-                            <button onClick={e => onClickSave(id, input.value)}>
-                                save
-                            </button>
-                        </span>
-                    ) : (
-                        <span>
-                            {name}
-                            <a href="#" onClick={e => onClickRename(id)}>
-                                rename
-                            </a>
-                            <a href="#" onClick={e => onClickRemove(id)}>
-                                remove
-                            </a>
-                        </span>
-                    )}
+                    <File id={id} />
                 </li>
             ))}
         </ol>
     )
+}
+
+const styles = {
+    files: {
+        display: "flex",
+        flexDirection: "column",
+        listStyleType: "none",
+        margin: 0,
+        padding: 0,
+    },
 }
 
 export function matchStateToProps(state) {
@@ -44,11 +32,7 @@ export function matchStateToProps(state) {
 }
 
 export function matchDispatchToProps(dispatch) {
-    return {
-        onClickRename: id => dispatch(renameFile(id)),
-        onClickRemove: id => dispatch(removeFile(id)),
-        onClickSave: (id, name) => dispatch(renamedFile(id, name)),
-    }
+    return {}
 }
 
 export const ConnectedFiles = connect(

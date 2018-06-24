@@ -20,8 +20,14 @@ const reduxStore = createStore(
     storedState ? JSON.parse(storedState) : undefined,
 )
 
+let debounce
+
 reduxStore.subscribe(() => {
-    electronStore.set("redux-state", JSON.stringify(reduxStore.getState()))
+    clearTimeout(debounce)
+
+    debounce = setTimeout(() => {
+        electronStore.set("redux-state", JSON.stringify(reduxStore.getState()))
+    }, 250)
 })
 
 render(

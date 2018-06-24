@@ -37,21 +37,38 @@ export function App({ onDragOver, onDragLeave, onDragEnd, onDrop }) {
             onDragLeave={onDragLeave}
             onDragEnd={onDragEnd}
             onDrop={onDrop}
-            style={styles.dropper}
+            style={styles.app}
         >
-            <Files />
+            <div style={styles.files}>
+                <Files />
+            </div>
+            <div style={styles.details} />
         </div>
     )
 }
 
 const styles = {
-    dropper: {
+    app: {
         position: "absolute",
         top: 0,
-        right: 0,
-        bottom: 0,
         left: 0,
-        backgroundColor: "#999",
+        width: "100%",
+        height: "100%",
+        fontFamily: "sans-serif",
+    },
+    files: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "30%",
+        height: "100%",
+    },
+    details: {
+        position: "absolute",
+        top: 0,
+        left: "30%",
+        width: "70%",
+        height: "100%",
     },
 }
 

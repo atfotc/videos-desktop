@@ -1,12 +1,13 @@
-const initial = {}
+import uuidv1 from "uuid/v1"
 
-let id = 0
+const initial = {}
 
 export const FILES_RESET = "FILES_RESET"
 export const FILES_ADD = "FILES_ADD"
 export const FILES_RENAME = "FILES_RENAME"
 export const FILES_RENAMED = "FILES_RENAMED"
 export const FILES_REMOVE = "FILES_REMOVE"
+export const FILES_SELECT = "FILES_SELECT"
 
 export function files(state = initial, action) {
     if (action.type === FILES_RESET) {
@@ -14,12 +15,15 @@ export function files(state = initial, action) {
     }
 
     if (action.type === FILES_ADD) {
+        const id = uuidv1()
+
         return {
             ...state,
-            [++id]: {
+            [id]: {
                 id,
                 ...action.file,
                 renaming: false,
+                selected: false,
             },
         }
     }
@@ -54,6 +58,19 @@ export function files(state = initial, action) {
         return next
     }
 
+    if (action.type === FILES_SELECT) {
+        const next = {}
+
+        Object.values(state).forEach(value => {
+            next[value.id] = {
+                ...value,
+                selected: value.id === action.id,
+            }
+        })
+
+        return next
+    }
+
     return state
 }
 
@@ -75,4 +92,8 @@ export function renamedFile(id, name) {
 
 export function removeFile(id) {
     return { type: FILES_REMOVE, id }
+}
+
+export function selectFile(id) {
+    return { type: FILES_SELECT, id }
 }
